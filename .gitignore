@@ -8,3 +8,9 @@
 /The PAS Tool/The PAS Tool/PassTo/.vs/PassTo
 /The PAS Tool/The PAS Tool/PassTo/.vs/PassTo/CopilotIndices
 /The PAS Tool/The PAS Tool/PassTo/publish
+*.db
+*.db-shm
+*.db-wal
+*.db-shm
+*.vsidx
+*.vsidx
