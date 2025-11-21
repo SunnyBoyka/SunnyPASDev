@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+
+<script type="text/javascript">
+
+    var indexApp = {
+        start_action: function () {
+            let start = true;
+           
+            Promise.all([
+                BasicInfo.start_action("BasicInfo", null),
+                nMap.start_action("nMap", null),
+                PracticeUI.start_action("PracticeUI",null),
+                NMapCommand.start_action("NMapCommand",null),
+            ]).then(values => {
+                indexApp.afterRender();
+            });
+        },
+        EditCallBack: function (obj) {
+            alert(JSON.stringify(obj, null, ' '));
+            //FileNomination.doEditFill(obj);
+        },
+        afterRender: function () {
+            theApp.goSomeWhere();
+
+            var short_cuts = [];
+            var short_cut = {};
+
+            short_cut = {}; short_cut.id = "the_dfq"; short_cut.text = "What is PAS Suite";
+            short_cuts.push(short_cut);
+
+            short_cut = {}; short_cut.id = "nMap"; short_cut.text = "NMap";
+            short_cuts.push(short_cut);
+
+            // short_cut = {}; short_cut.id = "PracticeUI"; short_cut.text = "PracticeUI";
+            // short_cuts.push(short_cut);
+            
+            // short_cut = {}; short_cut.id = "NMapCommand"; short_cut.text = "NMapCommand";
+            // short_cuts.push(short_cut);
+
+
+            // short_cut = {}; short_cut.id = "TrustStore"; short_cut.text = "TrustStore";
+            // short_cuts.push(short_cut);
+            // short_cut = {}; short_cut.id = "User"; short_cut.text = "User Management";
+            // short_cuts.push(short_cut);
+            // short_cut = {}; short_cut.id = "LocalPublish"; short_cut.text = "CRL Publish";
+            // short_cuts.push(short_cut);
+            // short_cut = {}; short_cut.id = "Dashboard"; short_cut.text = "Dashboard";
+            // short_cuts.push(short_cut);
+            // short_cut = {}; short_cut.id = "Syslog"; short_cut.text = "Syslog";
+            // short_cuts.push(short_cut);
+
+            // short_cut = {}; short_cut.isExternal = true;
+            // short_cut.id = "https://www.pexels.com/search/night%20train/";
+            // short_cut.text = "Night Life";
+            // short_cuts.push(short_cut);
+
+            Banner.Show_ShortCuts(short_cuts);
+            setTimeout(() => theApp.AOSInitialize(), 1000);
+        },
+        MakeAjax:function(e){
+            //alert("labamba");
+            $.majax({url: config.contextPath + "Home/GetTime" }).done(jData => {
+              alert(jData);
+            }).fail((xhr, textStatus,err) => alert('request failed\n' + xhr + textStatus))
+        },
+        MakeAdminAjax:function(e){
+            //alert("labamba");
+            $.majax({url: config.contextPath + "Home/GetAdminTime" }).done(jData => {
+              alert(jData);
+            }).fail((xhr, textStatus,err) => alert('request failed\n' + xhr + textStatus))
+        }
+    }; $(document).ready(() => indexApp.start_action())
+</script>
+@* <NMapCommand></NMapCommand> *@
+<BasicInfo></BasicInfo>
+<nMap></nMap> 

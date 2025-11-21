@@ -1,0 +1,15 @@
+.color-div {
+ width: 75px!important;
+ height: 75px!important;
+}
+
+ul#menu li {
+    display: inline;
+    text-align: center;
+    padding: 2px ;
+    margin: 0;
+    }
+
+li.nav-item:hover {
+  background-color: transparent !important;
+}

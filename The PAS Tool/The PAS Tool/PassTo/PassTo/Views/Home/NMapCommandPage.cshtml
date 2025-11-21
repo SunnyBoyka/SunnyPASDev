@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "NMapCommandPage";
+}
+<script type="text/javascript">
+
+    var nMapCommandApp = {
+        start_action: function () {
+            let start = true;
+            Promise.all([
+                NMapCommand.start_action("NMapCommand",null),
+            ]).then(values => {
+                nMapCommandApp.afterRender();
+            });
+        },
+        EditCallBack: function (obj) {
+            alert(JSON.stringify(obj, null, ' '));
+        },
+        afterRender: function () {
+            theApp.goSomeWhere();
+
+            var short_cuts = [];
+            var short_cut = {};
+
+            short_cut = {}; short_cut.id = "CommandSection"; short_cut.text = "NMapCommand";
+            short_cuts.push(short_cut);
+
+            Banner.Show_ShortCuts(short_cuts);
+            setTimeout(() => theApp.AOSInitialize(), 1000);
+        },
+    }; $(document).ready(() => nMapCommandApp.start_action())
+</script>
+<NMapCommand></NMapCommand>

@@ -1,0 +1,192 @@
+﻿<span class="d-none">labamba-{637F88DB-6182-4928-A640-A4E1D87586AD}</span>
+
+
+<style>
+    .message {
+        color: #FF0000;
+        font-size: small;
+        font-weight: bold;
+        white-space: pre;
+    }
+</style>
+
+@{
+    ViewBag.Title = "Login";
+}
+<script type="text/javascript">
+    var status = {
+        message: "@ViewBag.message"
+    }
+    var loginApp = {
+        changePassword: config.contextPath,
+        start_action: function () {
+            //alert("In Start Action");
+            theApp.goSomeWhere();
+            loginApp.afterRender();
+            loginApp.TakeEnterButtonEvent();
+        },
+        TakeEnterButtonEvent: function () {
+            document.addEventListener("keyup", (event) => {
+                if (event.isComposing || event.keyCode === 229 || event.keyCode != 13) return;//13 is the enter key
+                event.stopPropagation();
+                loginApp.click_button(event);
+            });
+        },
+        KeyUp: function (e) {
+            if (e.keyCode != 13) return; //13 is the enter key
+            loginApp.click_button(null);
+        },
+        click_button: function (e) {
+            let pwd = $("#password").val();
+            let mail = $("#mail").val();
+            if (!mail || !pwd) {
+                Alertify.ShowAlertDialog({
+                    "title": "This is a serious matter",
+                    "body": "Mail or Password cannot be empty",
+                    "buttons": ["Ok Fine I got it", "I just wanna check"],
+                    "foot_note": "Welcome to <h4 class='d-inline'>DFQ</h4><sub>Readiness</sub> "
+                });
+                return;
+            }
+            mail = mail.split("@@")[0];
+            //alert("In button click\nemail=" + uName + "\npassword=" + pwd);
+            $.ajax({
+                url: config.contextPath + "home/doLogin",
+                method: "POST",
+                data: { pwd: pwd, mail: mail }
+            }).done(jData => {
+                let result = null;
+                switch (jData) {
+                    case "DefaultLogIn":
+                        document.location.href = config.contextPath + "home/ChangePassword#change_password";
+                        break;
+                    case "RealLogIn":
+                        document.location.href = config.contextPath
+                        break;
+                    case "LogInFailed":
+                        result = jData.match(/[A-Z][a-z]+/g).join(' ');
+                        break;
+                    case "CowDung":
+                        result = jData.match(/[A-Z][a-z]+/g).join(' ');
+                        break;
+                    case "AlreadyLoggedIn":
+                        result = jData.match(/[A-Z][a-z]+/g).join(' ');
+                        Alertify.ShowAlertDialog({
+                            "title": "Not able to Log-in ?",
+                            "body": `User is ` + result ,
+                            "buttons": ["Ok Fine I got it", "I just wanna check"],
+                            "foot_note": "Only one login per user allowed"
+                        });
+                        return;
+                }
+                if (result == null) return;
+                Alertify.ShowAlertDialog({
+                    "title": "Not able to Log-in ?",
+                    "body": `May be your mail id is not regestered with us, well in any case  <br/>
+                                    <span class="text-uppercase fs-small">
+                                    Contact: <a target="_blank" href="mailto:kothapeta-uppara.thandava-krishna-ext@alstomgroup.com?subject=Unable to log in&cc=rajesh-kumar.verma@alstomgroup.com&body=Hello ,%0AI am Not able to log in%0A%0A%0A%0AThanks and Regards">Thandava</a></span>` ,
+                    "buttons": ["Ok Fine I got it", "I just wanna check"],
+                    "foot_note": "If you are not able to login please contact admin"
+                });
+            })
+        },
+        click_testButton(e) {
+            alert("Labamba");
+            $.ajax({ url: config.contextPath + "Home/GetLockedGateByProjectID", data: { "project_id": 1 } }).
+                then(jData => {
+                    alert(jData)
+                }).fail((a, b) => {
+                    alert(JSON.stringify(a, null, ' ') + "\n" + "b :" + b);
+                });
+            //$.ajax({
+            //    url: config.contextPath + "Home/GetLockedGateByProjectID",
+            //    type: 'GET',
+            //    dataType: 'json',
+            //    beforeSend: function (xhr) {
+            //        xhr.setRequestHeader('Authorization', 'Bearer ' + 'yourAccessToken');
+            //    },
+            //    success: function (response) {
+            //        // Handle success response
+            //    },
+            //    error: function (xhr, textStatus, errorThrown) {
+            //        // Handle error response
+            //    }
+            //});
+        },
+        afterRender: function () {
+            //alert("labamba");
+            var short_cuts = [];
+            var short_cut = {};
+
+            short_cut = {}; short_cut.id = "sign_in"; short_cut.text = "Sign in";
+            short_cuts.push(short_cut);
+
+            //short_cut = {}; short_cut.id = "heading_AutoB"; short_cut.text = "TScript gen";
+            //short_cuts.push(short_cut);
+
+            Banner.Show_ShortCuts(short_cuts);
+            setTimeout(() => theApp.AOSInitialize(), 1000);
+        }
+    };
+    $(document).ready(loginApp.start_action);
+</script>
+<div id="log_me_in" class="container mt-5" data-aos="fade-down" data-aos-duration="3000">
+    <div class="row mb-2 h-100">
+        <div class="col">
+            <div class="card" style="border-radius: 1rem;border:2px solid lightgray">
+                <div class="row g-0">
+                    @* <div class="col-3" style="border-top-left-radius:1rem; border-bottom-left-radius:1rem ;background-image: url(/Content/Images/Train_2.jpg); background-size:cover">
+                    </div> *@
+                    <div style="border-top-left-radius:1rem; border-bottom-left-radius:1rem ; background-size:cover">
+                    </div>
+                    @* if image is added add col-9 in below class*@
+                    <div class="d-flex align-items-center">
+                        <div class="card-body p-4 p-lg-5 text-black">
+                            <h5 id="sign_in" class="fw-normal mb-3 pb-3 fw-bold alstom-red-color" style="text-shadow:2px 2px 4px gray ;letter-spacing: 3px;">Sign into your account</h5>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1"><img class="border border-2 border-light rounded-circle" src="~/Content/images/19.png" alt="Key Icon" style="width: 25px;" /></span>
+                                <input value="admin" type="text" id="mail" class="form-control ph-small" name="mail" placeholder="@Html.Raw("letters in your mailid that come before '@alstomgroup.com'")" aria-label="mail" aria-describedby="basic-addon1">
+                                <span class="input-group-text text-info">
+                                    <img class="border border-2 border-light rounded-circle" src="~/Content/images/17.png" alt="Key Icon" style="width: 25px;" />
+                                </span>
+
+                                @* <span class="input-group-text text-info"><b>@@alstomgroup.com</b></span> *@
+                            </div>
+                            @* <div class="text-muted fs-very-small mb-3">For example if your mail is sesha.sai@alstomgroup.com, you just need to type sesha.sai</div> *@
+                            <div class="text-muted fs-very-small mb-3"></div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><img class="border border-2 border-light rounded-circle" src="~/Content/images/21.png" alt="Key Icon" style="width: 25px;" /></span>
+                                @* <span class="input-group-text" id="basic-addon1"><i class="bi bi-key"></i></span> *@
+                                <input value="admin@123" type="password" id="password" class="form-control" name="pwd" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+                                <span class="input-group-text fs-5"
+                                      onmousedown="$('#password').attr({'type': 'text'})"
+                                      onmouseup="$('#password').attr({'type': 'password'})"
+                                      id="basic-addon1">
+                                    &#128065;
+                                </span>
+                            </div>
+                            <div class="pt-1 mb-4">
+                                <button class="btn btn-dark btn-lg btn-block" type="button" onclick="loginApp.click_button(window.event)">Sign in</button>
+                                @*<button class="btn btn-dark btn-lg btn-block" type="button" onclick="loginApp.click_testButton(window.event)">Test Ajax</button>*@
+                                <label class="message" id="message" />
+                                @*<button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>*@
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-6">
+                                    <a class="btn btn-outline-info float-start fs-small" target="_blank" href="mailto:kothapeta-uppara.thandava-krishna-ext@alstomgroup.com?subject=Forgot Password&cc=rajesh-kumar.verma@alstomgroup.com&body=Hello ,%0AI deeply regret to inform that I have forgotten my password %0A%0AThanks and Regards">Forgot password ?<br />Click here</a>
+                                </div>
+                                <div class="col-6">
+                                    <a class="btn btn-outline-info float-end fs-small" target="_blank" href="mailto:kothapeta-uppara.thandava-krishna-ext@alstomgroup.com?subject=New Password&cc=rajesh-kumar.verma@alstomgroup.com&body=Hello,%0AI want access to this Portal. %0A%0AThanks and Regards">New User ?<br />Click here</a>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="badge text-bg-secondary fs-5 ">Session ID = @ViewBag.sessionId</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3>@ViewBag.message</h3>
+</div>

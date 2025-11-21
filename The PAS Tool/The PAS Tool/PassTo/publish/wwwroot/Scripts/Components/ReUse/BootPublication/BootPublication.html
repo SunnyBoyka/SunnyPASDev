@@ -1,0 +1,46 @@
+﻿<div class="" data-aos="{{animation}}">
+    <div style="margin-top:0px;">
+        <!--<h1 class="text-primary" style="position:absolute;z-index:10000;left:50px;">Welcome</h1>-->
+        <div id="{{id}}_car" class="carousel slide" data-bs-touch="false" data-bs-interval="false">
+            <div class="carousel-inner">
+                {{#each images as |img|}}
+                {{@index}}
+                {{#if @first}}
+                <div class="carousel-item active">
+                    <div>
+                        {{#if ../ht}}
+                        <img class="d-block w-100" style="height:{{../ht}}; width:50px" src="{{img}}" alt="Image">
+                        {{/if}}
+                        {{#unless ../ht}}
+                        <img class="d-block w-100" src="{{img}}" alt="Image">
+                        {{/unless}}
+                    </div>
+                </div>
+                {{/if}}
+                {{#unless @first}}
+                <div class="carousel-item">
+                    <div>
+                        {{#if ../ht}}
+                        <img class="d-block w-100" style="height:{{../ht}};" src="{{img}}" alt="Image">
+                        {{/if}}
+                        {{#unless ../ht}}
+                        <img class="d-block w-100" src="{{img}}" alt="Image">
+                        {{/unless}}
+                    </div>
+                </div>
+                {{/unless}}
+                {{/each}}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#{{id}}_car" data-bs-slide="prev">
+                <span style="height:50px;" class="carousel-control-prev-icon {{bg}} rounded-circle" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next " type="button" data-bs-target="#{{id}}_car"
+                    data-bs-slide="next">
+                <span style="height:50px;" class="carousel-control-next-icon {{bg}} rounded-circle " aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</div>
+

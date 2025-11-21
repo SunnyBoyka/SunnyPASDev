@@ -1,0 +1,95 @@
+<div id="AllProjects" class="container py-5" data-aos="zoom-in" data-aos-duration="3000">
+    <div class="container mt-4">
+        <div class="row mb-3 animate__animated animate__lightSpeedOutRight" id="allQ">
+            <div class="col text-center">
+                <span class="bg-primary text-white p-2  rounded">Projects</span>
+                <div class="">
+                    <h1 class="text-dark mt-3 mb-3 text-capitalize">And Their DFQ Readiness</h1>
+                    <hr class="shr" />
+                </div>
+            </div>
+        </div>
+        <div id="allQ_table" class="row animate__animated animate__lightSpeedOutLeft">
+            <PEST AllProjects.theUsageTable uid_AllProjects>
+                <div id="pager_edit_AllProjects" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light"">
+                                <h5 class="modal-title">Modal title</h5>
+                                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body bg-light">
+                                <div class="row mt-1">
+                                    <div class="col">S.No:</div>
+                                    <div class="col">
+                                        <input type="text" class="form-control text-dark" id="id_AllProjects" />
+                                    </div>
+                                </div><div class="row mt-1">
+                                    <div class="col">Question:</div>
+                                    <div class="col">
+                                        <input type="text" class="form-control text-dark" id="question_AllProjects" />
+                                    </div>
+                                </div><div class="row mt-1">
+                                    <div class="col">Email:</div>
+                                    <div class="col">
+                                        <input type="text" class="form-control text-dark" id="mail_AllProjects" />
+                                    </div>
+                                </div><div class="row mt-1">
+                                    <div class="col">Time:</div>
+                                    <div class="col">
+                                        <input type="text" class="form-control text-dark" id="insert_time_stamp_AllProjects" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="AllProjects.save_click(event)">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="pager_AllProjects" class="no_highlights d-none mt-2">
+                    <hr />
+                    <div class="title  d-none" Total_Records_AllProjects>
+                        <h6 id="totalRecords_AllProjects" class="title p-2 border border-1 border-secondary rounded-pill"></h6>
+                    </div>
+                    <div class="title  d-none" Total_Pages_AllProjects>
+                        <h6 id="totalPages_AllProjects" class="title p-2 border border-1 border-secondary rounded-pill"></h6>
+                    </div>
+                    <div class="title d-none p-2 border border-1 border-secondary rounded-pill" Records_Per_Page_AllProjects>
+                        <h6 class="title">Records Per page =</h6>
+                        <select class="fs-tiny" id="RecordsPerPage_AllProjects" onchange="AllProjects.theUsageTable.onItemsPerPageChange(event)">
+                            <option selected value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="250">250</option>
+                        </select>
+                    </div>
+                    <div class="title d-none" Current_Page_AllProjects>
+                        <h5 class="title p-2 border border-1 border-secondary rounded-pill" id="CurrentPage_AllProjects"></h5>
+                    </div>
+                    <div class="title d-none p-2 border border-1 border-secondary rounded-pill" Go_to_Page_AllProjects>
+                        <h5 class="title ">Go to Page</h5>
+                        <input type="text" class="fs-tiny" style="width: 30px;" id="GoToPage_AllProjects" onchange="AllProjects.theUsageTable.GoToPageChange(event)" />
+                    </div>
+                    <div class="pageBar d-none p-2 border border-1 border-secondary rounded-pill" Page_Bar_AllProjects>
+                        <div class="arrow d-none" Start_Batch_AllProjects onclick="AllProjects.theUsageTable.Left_double_arrow_Click(event)">&Larr; </div>
+                        <div class="arrow" onclick="AllProjects.theUsageTable.Left_arrow_Click(event)">&lt; </div>
+                        <div id="items_AllProjects" class="items">
+                            <span class="pItem">1</span> <span class="pItem">2</span> <span class="pItem">3</span> <span class="pItem">4</span>
+                        </div>
+                        <div class="arrow" onclick="AllProjects.theUsageTable.Right_arrow_Click(event)">&gt; </div>
+                        <div class="arrow d-none" End_Batch_AllProjects onclick="AllProjects.theUsageTable.Right_double_arrow_Click(event)">&Rarr; </div>
+                    </div>
+                    <hr style="clear: both;" />
+                </div>
+                <!-- <div id="TableCont_AllProjects"></div>  -->
+                <table class="table table-light table-hover table-striped table-bordered">
+                    <thead id="head_AllProjects"><tr></tr></thead>
+                    <tbody id="TableCont_AllProjects"></tbody>
+                </table>
+            </PEST>
+        </div>
+    </div>
+</div>

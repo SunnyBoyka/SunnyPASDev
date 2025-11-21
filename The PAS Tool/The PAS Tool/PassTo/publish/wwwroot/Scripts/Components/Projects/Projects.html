@@ -1,0 +1,51 @@
+﻿<!--<h1>This is One time set Up</h1>-->
+<div id="prj_details">
+    <div class="mt-4">
+        <div class="row mb-3" data-aos="zoom-in">
+            <div class="col text-center fw-bolder">
+                <span class="p-2 text-dark rounded">Project</span>
+                <div>
+                    <h1 class="text-caption-color mt-3 mb-3">Project Details</h1>
+                    <hr class="shr" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container p-4 info-pannel w-75" data-aos="zoom-in" style="letter-spacing:2px;">
+        The Project Page in our CRL Manager is designed to allow users to input and manage essential project details. On this page, you can add the project name and project ID, providing a clear and organized way to identify and track each project.
+    </div>
+    <div class="container bg-pannel p-3"  data-aos="zoom-in">        
+        <div class="row mb-2">
+            <div class="col p-3">
+                <div class="input-group mb-2">
+                    <span class="input-group-text" id="basic-addon1">Project Id</span>
+                    <input type="text" id="project_id" class="form-control ph-small" name="Project_id" placeholder="Enter Project Id Alpha Neumeric" aria-label="mail" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Project Name</span>
+                    <input type="text" id="project_name" class="form-control ph-small" name="Project_Name" placeholder="Enter Project Name" aria-label="mail" aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col">
+                <hr />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="pkiSetUp" id="pkiSingle" value="true">
+                    <label class="form-check-label" for="inlineRadio1">Single PKI Setup</label>
+                </div>
+                <div class="form-check form-check-inline float-end">
+                    <input class="form-check-input" type="radio" name="pkiSetUp" id="pkiDual" value="false">
+                    <label class="form-check-label" for="inlineRadio2">Dual PKI Setup</label>
+                </div>
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary" id="add_project" onclick="Projects.AddProjectClick(event)">Add</button>
+                <button class="btn btn-primary" id="update_project" onclick="Projects.UpdateProjectClick(event)">Update Project</button>
+            </div>
+        </div>
+    </div>
+</div>

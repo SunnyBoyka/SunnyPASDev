@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+<script type="text/javascript">
+    var data = {
+        animation: "zoom-in-down",
+        wd: "100%",
+        id: "publication",
+        title: "WCE",
+        sub_title: "do you know what we did last year . . . ",
+        images: [config.contextPath + "Content/info/img/1.jpg", config.contextPath + "Content/info/img/1a.jpg", config.contextPath + "Content/info/img/2.jpg", config.contextPath + "Content/info/img/3.jpg",
+        config.contextPath + "Content/info/img/4.jpg", config.contextPath + "Content/info/img/5.jpg", config.contextPath + "Content/info/img/6.jpg",
+        config.contextPath + "Content/info/img/7.jpg", config.contextPath + "Content/info/img/8.jpg", config.contextPath + "Content/info/img/9.jpg",]
+    }
+    var aboutApp = {
+        start_action: function () {
+            Promise.all([
+                AboutUS.start_action(null, "AboutUS"),
+                //(new OwlPublication("Publication", data)).start_action(),
+            ]).then(values => {
+                aboutApp.afterRender();
+            });
+        },
+        afterRender: function () {
+            theApp.goSomeWhere();
+
+            var short_cuts = [];
+            var short_cut = {};
+
+            short_cut = {}; short_cut.id = "AboutUS"; short_cut.text = "About Us";
+            short_cuts.push(short_cut);
+
+            short_cut = {}; short_cut.id = "location"; short_cut.text = "Location";
+            short_cuts.push(short_cut);
+
+            Banner.Show_ShortCuts(short_cuts);
+            setTimeout(() => theApp.AOSInitialize(), 1000);
+        },
+    }; $(document).ready(() => aboutApp.start_action())
+</script>
+@*<Publication></Publication>
+<div id="criteria" class="text-center fs-1" data-aos="zoom-in-right" data-aos-duration="3000">
+    Read This Document carefully
+    <hr class="shr" />
+    <div>
+        <iframe src="/WCE/Content/Data/WCE_Poster.pdf" class="w-100" style="height:550px;" frameBorder="0"></iframe>
+    </div>
+</div>*@
+<AboutUS></AboutUS>

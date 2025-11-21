@@ -1,0 +1,37 @@
+﻿<span class="d-none">labamba-{637F88DZ-6182-4928-A640-A4E1D87586AD}</span>
+@{
+    ViewBag.Title = "Unauthorized";
+}
+<script type="text/javascript">
+    var theUnauthApp = {
+        start_action: function () {
+            theUnauthApp.afterRender();
+        },
+        afterRender: function () {
+            theApp.goSomeWhere();
+
+            var short_cuts = [];
+            var short_cut = {};
+
+            short_cut = {}; short_cut.id = "unauth"; short_cut.text = "Check out the problem";
+            short_cuts.push(short_cut);
+
+            Banner.Show_ShortCuts(short_cuts);
+            setTimeout(() => theApp.AOSInitialize(), 1000);
+        },
+    }; $(document).ready(() => theUnauthApp.start_action())
+</script>
+<div id="unauth" class="position-absolute" style="left:10px; top:10px;">
+    <img class="w-100" src="~/Content/images/Unauth.jpg" />
+    @*<img class="position-absolute top-0 start-0" style="z-index:0; height:30%;" src="~/Content/Images/No.jpg" />*@
+    <div class="position-absolute p-4 rounded" style="background-color:rgba(200,200,200,.5);left:0%; top:0%;">
+        @* <h6> @Html.Raw(@ViewBag.Message)</h6> *@
+        <div style="letter-spacing:2px;" class="fw-bold fs-small text-glow-dark">You are never supposed to be here</div>
+        <hr />
+        <a zora class="badge bg-danger p-2 fs-6 text-light text-capitalize opacity-25 position-relative" style="z-index:10" href="~/">
+            <i class="bi bi-sign-stop fs-3 pe-none"></i>
+            Click to sneak off
+            <i class="bi bi-sign-stop fs-3 pe-none"></i>
+        </a>
+    </div>
+</div>

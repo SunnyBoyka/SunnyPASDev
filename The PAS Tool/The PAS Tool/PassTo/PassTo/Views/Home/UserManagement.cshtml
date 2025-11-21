@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "User";
+}
+
+
+<script type="text/javascript">
+    var userApp = {
+        start_action: function () {
+            Promise.all([
+                User.start_action("User", null),
+                UserPassword.start_action("UserPassword", { "title": "Update Password" }, false)
+          
+            ]).then(values => {
+                userApp.afterRender();
+                // setInterval(() => {
+                //     $.ajax({ url: config.contextPath + "Home/GetServerTime" }).done(jData => {
+                //         let s = jData;
+                //         if (s === "0") document.location = config.contextPath
+                //     }).fail((xhr, et) => document.location = config.contextPath)
+                // }, 30000);
+            });
+        },
+        EditCallBack: function (obj) {
+            alert(JSON.stringify(obj, null, ' '));
+            //FileNomination.doEditFill(obj);
+        },
+        afterRender: function () {
+            theApp.goSomeWhere();
+
+            var short_cuts = [];
+            var short_cut = {};
+
+            short_cut = {}; short_cut.id = "User"; short_cut.text = "User Management";
+            short_cuts.push(short_cut);
+            short_cut = {}; short_cut.id = "UserPassword"; short_cut.text = "Update Password";
+            short_cuts.push(short_cut);
+
+            Banner.Show_ShortCuts(short_cuts);
+            setTimeout(() => theApp.AOSInitialize(), 1000);
+        },
+    }; $(document).ready(() => userApp.start_action())
+</script>
+
+<User></User> 
+<UserPassword></UserPassword>

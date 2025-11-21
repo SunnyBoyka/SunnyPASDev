@@ -1,0 +1,20 @@
+﻿<div  class="mt-5" data-aos-delay="500" data-aos="{{animation}}">
+    <div class="container border border-1 rounded-6">
+        <div class="row g-0">
+            <div class="col">
+                <div class="h-100 d-flex flex-column justify-content-center p-5">
+                    <p class="d-inline-flex bg-secondary text-white py-1 px-4 me-auto">{{{title}}}</p>
+                    <h1 class="text-uppercase mb-2 fs-5 fw-bolder center-shadow" style="letter-spacing:5px;" >{{{sub_title}}}</h1>
+                    <hr/>
+                    <div id="{{id}}" class="owl-carousel owl-theme" >
+                        {{#each images as |img|}}
+                        <div class="item">
+                            <img  src="{{img}}" style="width:{{../wd}}" alt="">
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

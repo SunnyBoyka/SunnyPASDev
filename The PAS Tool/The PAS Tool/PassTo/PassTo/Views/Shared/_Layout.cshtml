@@ -1,0 +1,366 @@
+﻿<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PASTool</title>
+    <script type="text/javascript">
+         var config = {
+             contextPath: '@Url.Content("~")/',
+             context_path: '@Url.Content("~").ToLower()',
+        };
+    </script>
+    <link href="~/favicon.ico" rel="icon">
+    @* <link href="~/Content/lib/bootstrap/dist/css/alstom-bootstrap.min.css" rel="stylesheet" /> *@
+    @* <link href="~/Content/lib/bootstrap/dist/css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/toolkit.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/mixins.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/mixins.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-grid.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-reboot.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-reboot.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-utilities.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-utilities.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" /> *@
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/common.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/common.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/jquery-ui.theme.css" rel="stylesheet" />
+
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/lib/bootstrap/dist/css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/Content/lib/jquery/dist/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/lib/owlcarousel/assets/owl.carousel.css" rel="stylesheet" />
+    <link href="~/Content/lib/owlcarousel/assets/owl.theme.default.css" rel="stylesheet" />
+    <link href="~/Scripts/Components/ReUse/GenericTable/Pest.css" rel="stylesheet" />
+    <link href="~/Content/css/aos.css" rel="stylesheet" />
+    <link href="~/Content/css/site.css" rel="stylesheet" />
+
+    <script src="~/Content/lib/jquery/dist/js/jquery.min.js"></script>
+    <script src="~/Content/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/lib/jquery/dist/js/jquery-ui.js"></script>
+    <script src="~/Content/lib/owlcarousel/owl.carousel.js"></script>
+    <script src="~/content/lib/moment/moment.js"></script>
+
+    <script src="~/Content/js/aos.js"></script>
+    <script src="~/Content/js/ALT`SPA.js"></script>
+    <script src="~/Content/js/aos.js"></script>
+    <script src="~/Content/js/HelpOnScroll.js"></script>
+    <script src="~/Content/js/Utils.js"></script>
+    <script src="~/Scripts/Dependencies/handlebars.min.js"></script>
+    <script src="~/Scripts/Dependencies/underscore-umd-min.js"></script>
+    <script src="~/Scripts/OOjaH/TemplateRenderer.js"></script>
+    <script src="~/Scripts/Components/Header/Header.js"></script>
+    <script src="~/Scripts/Components/Footer/Footer.js"></script>
+    <script src="~/Scripts/Components/Banner/Banner.js"></script>
+    <script src="~/Scripts/Components/AboutUS/AboutUS.js"></script>
+    <script src="~/Scripts/Components/BasicInfo/BasicInfo.js"></script>
+    <script src="~/Scripts/Components/nMap/nMap.js"></script>
+    <script src="~/Scripts/Components/EntryLog/EntryLog.js"></script>
+    @* <script src="~/Scripts/Components/UploadCRL/UploadCRL.js"></script> *@
+    <script src="~/Scripts/Components/UpdatePassword/UpdatePassword.js"></script>
+    <script src="~/Scripts/Components/UserPassword/UserPassword.js"></script>
+    <script src="~/Scripts/Components/User/User.js"></script>
+    <script src="~/Scripts/Components/Dashboard/Dashboard.js"></script>
+    <script src="~/Scripts/Components/Syslog/Syslog.js"></script>
+    <script src="~/Scripts/Components/ThePestTable/ThePestTable.js"></script>
+    <script src="~/Scripts/Components/Info/Info.js"></script>
+    <script src="~/Scripts/Components/Projects/Projects.js"></script>
+    <script src="~/Scripts/Components/ReUse/Alertify/Alertify.js"></script>
+    <script src="~/Scripts/Components/ReUse/OwlPublication/OwlPublication.js"></script>
+    <script src="~/Scripts/Components/ReUse/GenericTable/Pest.js"></script>
+    <script src="~/Scripts/Components/PracticeUI/PracticeUI.js"></script>
+    <script src="~/Scripts/Components/NMapCommand/NMapCommand.js"></script>
+    <link href="~/Content/lib/datatables/css/datatables.min.css" rel="stylesheet" />
+    <link href="~/Content/lib/datatables/css/buttons.dataTables.min.css" rel="stylesheet" />
+
+    <script src="~/Content/lib/datatables/js/dataTables.min.js"></script>
+    <script src="~/Content/lib/datatables/js/dataTables.buttons.min.js"></script>
+    <script src="~/Content/lib/datatables/js/jszip.min.js"></script>
+    <script src="~/Content/lib/datatables/js/pdfmake.min.js"></script>
+    <script src="~/Content/lib/datatables/js/vfs_fonts.js"></script>
+    <script src="~/Content/lib/datatables/js/buttons.html5.min.js"></script>
+    <script src="~/Content/lib/datatables/js/buttons.colVis.min.js"></script>
+
+    <!-- ############### ALL CRL Component classes ############### -->
+    <script src="~/Scripts/Components/PKISetup/PKISetup.js"></script>
+    <script src="~/Scripts/Components/Configuration/Configuration.js"></script>
+    <script src="~/Scripts/Components/CRLPublish/CRLPublish.js"></script>
+    <script src="~/Scripts/Components/Publish/Publish.js"></script>
+    <!-- ############### ALL CRL Component classes ############### -->
+    <meta name="color-scheme" content="only light">
+
+    <script type="text/javascript">
+        var LoggedInUser = {
+             exempted_routes: JSON.parse(`@Newtonsoft.Json.JsonConvert.SerializeObject(@Utils.BasicAction.AnonymousMethods)`.replace(/&quot;/g, "\"")),
+             id : @Utils.SessionValues.UserId,
+             name: "@Context.User?.Identity?.Name",
+             mail: "@Utils.SessionValues.Mail",
+             role: "@Utils.SessionValues.UserRole",
+             ExpiryInterval: @Utils.BasicAction.ExpireTimeSpan.TotalSeconds *10*60,
+         };
+
+        var BasicAction = {
+            project: null
+        }       
+        var banner_data = {
+            id: "TheMainBanner",
+            captions: [
+                {
+                    img: "~/Content/images/1.jpg",
+                    Mainheading: "The Pas Suite",
+                    color: "black",
+                    Subheading: "The Common Framework for all PEN tests"
+                },
+                {
+                    img: "~/Content/images/2.jpg",
+                    Mainheading: "The Pas Suite",
+                    color: "darkblue",
+                    Subheading: "All PEN testings under one umbrella"
+                },
+                {
+                    img: "~/Content/images/3.jpg",
+                    Mainheading: "The Pas Suite",
+                    color: "purple",
+                    Subheading: "Lightening Fast testing all at you disposal "
+                },
+                {
+                    img: "~/Content/images/4.jpg",
+                    Mainheading: "The Pas Suite",
+                    color: "lime",
+                    Subheading: "The next gen Automation"
+                },
+                {
+                    img: "~/Content/images/5.jpg",
+                    Mainheading: "The Pas Suite",
+                    color: "white",
+                    Subheading: "Beware your machine is being scanned"
+                }
+            ]
+        }
+        var theApp = {
+            CountDown: @Utils.BasicAction.ExpireTimeSpan.TotalSeconds,
+            CountIndex:@Utils.BasicAction.ExpireTimeSpan.TotalSeconds,
+            CollapseLeftBar:function(e){
+                $("#con_d").toggle();
+                if ($("#con_d").is(":visible")) {
+                        //alert('Element is visible');
+                        $("#right_col").removeClass("col");
+                        $("#right_col").addClass("col-10");
+                    } else {
+                        //alert('Element is not visible');
+                        $("#right_col").removeClass("col-10");
+                        $("#right_col").addClass("col");
+                   }
+            },
+            RedirectIfUserSessionExpired_1: function () {
+                let CurrentLocation = window.location.href.split('?')[0].toLowerCase();
+                if(LoggedInUser.exempted_routes.some (route => (CurrentLocation.indexOf(route) !== -1))) return;
+                else
+                {
+                    setTimeout(() => {
+                            Alertify.ShowAlertDialog({
+                                "title": "This is a serious matter",
+                                "body": "You will be Logged out soon if you do not take any action - <span id='clock'></span>",
+                                "buttons": ["Ok let me log Out", "No I want to continue"],
+                                "foot_note" : "Welcome to V<sub>&</sub>V Overflow"
+                            },async(action) => {
+                                    if (!action) {
+                                        document.location.href = config.contextPath + "Home/LogOff";
+                                        return;
+                                    }
+                                    $.majax({url: config.contextPath + "Home/GetTime" });
+                                    theApp.CountIndex = theApp.CountDown;
+                                    clearInterval(theApp.interval);
+                                    theApp.doCountDown();
+                                    theApp.RedirectIfUserSessionExpired();
+                            });
+                        }, LoggedInUser.ExpiryInterval)
+                }
+            },
+            DoCountDown:function(){
+                let CurrentLocation = window.location.href.split('?')[0].toLowerCase();
+                if(LoggedInUser.exempted_routes.some (route => (CurrentLocation.indexOf(route) !== -1))) return;
+                theApp.interval = setInterval(() =>{
+                   if(theApp.CountIndex <= 0 ){
+                       clearInterval(theApp.interval);
+                       document.location.href = config.contextPath + "Home/LogOff";
+                   }
+                   $("#clock").text(theApp.CountIndex--);
+                }, 1000)
+            },
+            start_action: function () {
+                $.fn.bootstrapBtn = $.fn.button.noConflict();
+                theApp.DoMoveTop();
+                Promise.all([
+                    Alertify.start_action(null, "Alertify"),
+                    Footer.start_action(null, "footer"),
+                    Banner.start_action("banner", banner_data),
+                    Header.start_action(null, "header")
+                ]).then(jData => {
+                    theApp.AOSInitialize().then(jData => theApp.goSomeWhere());
+                }).catch(err => {
+                    let errInfo = "OOps !!!\nMsg:" + err.message +"\nStackTrace:" + err.stack;
+                    alert(errInfo);
+                    console.log(errInfo);
+                });
+                // theApp.RedirectIfUserSessionExpired();
+                // theApp.DoCountDown();
+            },
+            goSomeWhere: function () {
+                setTimeout(() => {
+                    let goSomewhere = window.location.href.split('#');
+                    if (goSomewhere.length < 2) return;
+                    goSomewhere = goSomewhere[1];
+                    //alert("need to navigate to: " + goSomewhere)
+                    let theEle = document.getElementById(goSomewhere);
+                    if (theEle != null) theEle.scrollIntoView();
+                }, 1000)
+            },
+            DoMoveTop: function () {
+                function TakeAction() {
+                    if ($(window).scrollTop() > 100) {
+                        $('.move-top').fadeIn(3000);
+                        $("#top_bar").css({"opacity": .5});
+                    } else {
+                        $('.move-top').fadeOut(3000);
+                        $("#top_bar").css({"opacity": 1});
+                    }
+                }
+                $(window).scroll(function () {
+                    TakeAction();
+                });
+                //$('.back-to-top').click(function () {
+                //    $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
+                //    return false;
+                //});
+                TakeAction();
+            },
+            AOSInitialize: function () {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        //$("body").css({ "overflow-x": "hidden" });
+                        //https://github.com/michalsnik/aos
+                        theApp.AOSInit();
+                        resolve("AOS Init Done");
+                    }, 1000);
+                })
+            },
+            AOSInit: function () {
+                //AOS.init();
+                // You can also pass an optional settings object
+                // below listed default settings
+                AOS.init({
+                    // Global settings:
+                    disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
+                    startEvent: 'DOMContentLoaded', // name of the event dispatched on the document, that AOS should initialize on
+                    initClassName: 'aos-init', // class applied after initialization
+                    animatedClassName: 'aos-animate', // class applied on animation
+                    useClassNames: false, // if true, will add content of `data-aos` as classes on scroll
+                    disableMutationObserver: false, // disables automatic mutations' detections (advanced)
+                    debounceDelay: 50, // the delay on debounce used while resizing window (advanced)
+                    throttleDelay: 99, // the delay on throttle used while scrolling the page (advanced)
+
+
+                    // Settings that can be overridden on per-element basis, by `data-aos-*` attributes:
+                    offset: 120, // offset (in px) from the original trigger point
+                    delay: 50, // values from 0 to 3000, with step 50ms
+                    duration: 3000, // values from 0 to 3000, with step 50ms
+                    easing: 'ease', // default easing for AOS animations
+                    once: false, // whether animation should happen only once - while scrolling down
+                    mirror: true, // whether elements should animate out while scrolling past them
+                    anchorPlacement: 'top-bottom', // defines which position of the element regarding to window should trigger the animation
+                });
+            }
+        }; $(document).ready(() => theApp.start_action())
+    </script>
+</head>
+@*<body style="background-color: rgb(220,220,220); color-scheme: only light;">*@
+<body style="color-scheme: only light;" id="top_class">
+    <Alertify></Alertify>
+    <div class="bg-primary sticky-top" id="top_bar">
+        <span class="me-auto">
+            <span class="badge text-bg-primary fs-6" style="letter-spacing:3px;">
+                <img src="~/favicon.ico" style="width:40px;cursor:pointer" onclick='$("#con_d").toggle();' />
+                PAS<sub>2</sub>
+            </span>
+        </span>
+        <div class="text-center float-end" id="login_status">
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="con_d" class="col-2" style="border-right:2px solid rgba(220,220,220,.5);">
+                <header></header>
+            </div>
+            <div class="col" id="right_col">
+                <banner></banner>
+                <div id="specialTag">
+                    <specialTag>
+                        @* <!--#specialTag_Start--> <!--Use these styles if you have scoped css in your project--> *@
+                        @RenderBody()
+                        @* <!--#specialTag_End--><!--Use these styles if you have scoped css in your project--> *@
+                    </specialTag>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                <footer></footer>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="LogInModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <img src="~/Content/Images/19.png" style="height:30px;" class="me-3" />
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Account Info.</h1>
+                    <button type="button" class="btn-close bg-warning" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="login_body" class="modal-body">
+                    <div class="row">
+                        <div class="col text-center">
+                            <label for="file-input">
+                                <img id="prof_img" src="~/Content/Images/19.png" class="img-fluid w-75 rounded-circle border-4 border-warning glow" style="cursor:pointer" />
+                            </label>
+                            <span class="fs-very-small">Click on image to set your DP</span>
+                            <input id="file-input" type="file" class="d-none" onchange="Header.handleFileSelect(event)" />
+                        </div>
+                        <div class="col">
+                            <div>
+                                <h6 class="d-inline">Name : </h6>
+                                <h6 id="acc_user_name" class="d-inline"></h6>
+                            </div>
+                            <hr />
+                            <div>
+                                <h6 class="d-inline">Role : </h6>
+                                <h6 id="acc_user_role" class="d-inline"></h6>
+                            </div>
+                            <hr />
+                            <div style="white-space:nowrap;">
+                                <h6 class="d-inline">Mail : </h6>
+                                <!--<h6 class="d-inline" id="acc_user_mail"></h6> <span class="text-secondary fs-small">@@alstomgroup.com</span>-->
+                                <h6 class="d-inline" id="acc_user_mail"></h6> <span class="text-secondary fs-small"></span>
+                            </div>
+                            <hr />
+                            <!--<div style="white-space:nowrap;" class="mt-3">
+                                <a zora class="btn btn-secondary btn-sm" href="~/Home/ChangePassword#change_password" data-bs-dismiss="modal">Change Password</a>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer mt-3">
+                    <div>
+                        <a href="~/Home/LogOff" class="btn btn-outline-secondary">Log Off</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#top_class" class="btn btn-dark rounded-circle move-top opacity-50 p-3"><i class="bi bi-arrow-up text-white"></i></a>
+</body>
+</html>

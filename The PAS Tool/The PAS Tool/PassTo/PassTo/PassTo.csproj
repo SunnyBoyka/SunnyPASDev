@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<ScopedCssEnabled>false</ScopedCssEnabled>
+	<EnableNETAnalyzers>False</EnableNETAnalyzers>
+	<AnalysisLevel>6.0-all</AnalysisLevel>
+	<EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
+	<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+	<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\Content\Profile\anitha.s-k\**" />
+    <Compile Remove="wwwroot\Content\Profile\urvashi.sai\**" />
+    <Compile Remove="wwwroot\Scripts\Components\PassToPublish\**" />
+    <Content Remove="wwwroot\Content\Profile\anitha.s-k\**" />
+    <Content Remove="wwwroot\Content\Profile\urvashi.sai\**" />
+    <Content Remove="wwwroot\Scripts\Components\PassToPublish\**" />
+    <EmbeddedResource Remove="wwwroot\Content\Profile\anitha.s-k\**" />
+    <EmbeddedResource Remove="wwwroot\Content\Profile\urvashi.sai\**" />
+    <EmbeddedResource Remove="wwwroot\Scripts\Components\PassToPublish\**" />
+    <None Remove="wwwroot\Content\Profile\anitha.s-k\**" />
+    <None Remove="wwwroot\Content\Profile\urvashi.sai\**" />
+    <None Remove="wwwroot\Scripts\Components\PassToPublish\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Utils\AESEncryptDecrypt.cs" />
+    <Content Include="Utils\BasicAction.cs" />
+    <Content Include="Utils\Utils.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Content\Profile\project1\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.10" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql" Version="8.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+    <PackageReference Include="runtime.native.System.Security.Cryptography" Version="4.3.4" />
+    <PackageReference Include="Serilog" Version="4.1.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.1" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+  </ItemGroup>
+
+</Project>

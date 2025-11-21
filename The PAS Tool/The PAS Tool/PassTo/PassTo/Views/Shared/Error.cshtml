@@ -1,0 +1,53 @@
+﻿@model ErrorViewModel
+@using Utils;
+@{
+    ViewData["Title"] = "Error";
+}
+
+
+@if (Model.ShowRequestId)
+{
+    <strong>Request ID:</strong>
+    <code>@Model.RequestId</code>
+}
+<script type="text/javascript">
+    var ErrorApp = {
+        start_action: function () { },
+        Click_Send_error_Info: function (e) {
+            let error_txt = $("#exp").val().replace(/<b>/g, '').replace(/<\/b>/g, '').replace(/<br\/>/g, '\n').trim();
+            navigator.clipboard.writeText(error_txt);
+            alert("Error Info Copied to Clipboard");
+            $("#mail_link").removeClass("d-none");
+        }
+    }; $(document).ready(() => ErrorApp.start_action())
+</script>
+<div class="text-dark">
+    <span style="opacity:0">800561A3-7541-45AB-A037-5A88D79EC7C6</span>
+    <div class="container">
+        <hgroup>
+            <h1>We encountered an Issue</h1>
+            <h2>An error occurred while processing your request.</h2>
+        </hgroup>
+        <div class="row">
+            <div class="col">
+                <h1 class="">&#9882; OOps !!! &#9882;</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="error_info" class="" style="background-color:transparent;font-size:11px;">@Html.Raw(@Model?.ex?.ProcessExceptionHTML()) </div>
+                <textarea id="exp" class="d-none">
+                    @Model?.ex?.ProcessException()
+                </textarea>
+            </div>
+        </div>
+        <hr class="bg-warning mb-3" />
+        <div class="row">
+            <div class="col">
+                <span class="badge bg-danger p-3 mb-2 badge-pill">It would be nice if you click the below button and follow the instructions</span><br />
+                <button class="btn btn-primary mb-2 p-3 badge-pill" onclick="ErrorApp.Click_Send_error_Info(event);">Click here to copy error info Into Clipboard</button><br />
+                <a id="mail_link" class="btn btn-outline-info float-start d-none p-3 badge-pill" target="_blank" href="mailto:ashu.joshi@alstomgroup.com?subject=Issue In Constellation&cc=sesha.sai@alstomgroup.com&body=Hi Ashu,%0A%0APaste the Error Info here%0A%0AThanks and Regards">Now Click here and Send us the error</a>
+            </div>
+        </div>
+    </div>
+</div>

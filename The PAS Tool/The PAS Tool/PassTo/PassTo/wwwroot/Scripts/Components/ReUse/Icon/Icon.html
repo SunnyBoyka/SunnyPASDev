@@ -1,0 +1,35 @@
+﻿<button onclick="{{obj_name}}.show_user_details(event)" type="button" class="btn btn-primary p-2 border border-2 rounded-circle">
+    <span id="img_profile"><i class="bi bi-person pe-none mx-2 fs-4 pe-none"></i></span>
+</button>
+<div id="icon_{{uid}}">
+    <div class="modal fade" id="user_details_{{uid}}" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content  bg-black">
+                <div class="modal-header">
+                    <img src="~/favicon.ico" style="height:30px;" class="me-3" />
+                    <h1 class="modal-title fs-5">Your Profile</h1>
+                    <button type="button" class="btn btn-close bg-warning" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your Personal Details</p>
+                    <div class="row">
+                        <div class="col-8">
+                            <h1 id="user_name"></h1>
+                            <span class="fs-tiny {{uid}}"></span>
+                            <div >
+                                <h5 id="user_mail" class="d-inline"></h5><span class="text-secondary fs-6"> @alstomgroup.com</span>
+                            </div>
+                        </div>
+                        <div class="col-4 user_img" >
+                            <img id="user_img" class="rounded-circle border border-2 border-secondary float-lg-end" style="width:70px;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
