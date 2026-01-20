@@ -24,7 +24,7 @@ namespace PasToMicroservice.DAL
             await using var conn = new NpgsqlConnection(_connectionString);
             await conn.OpenAsync();
 
-            string query = "SELECT id, command FROM scan_data WHERE scan_status='Pending' ORDER BY id";
+            string query = "SELECT id, command,project_id FROM scan_data WHERE scan_status='Pending' ORDER BY id";
             await using var cmd = new NpgsqlCommand(query, conn);
             await using var reader = await cmd.ExecuteReaderAsync();
 
@@ -34,7 +34,8 @@ namespace PasToMicroservice.DAL
                 {
                     Id = reader.GetInt32(0),
                     Command = reader.GetString(1),
-                    ScanStatus = "Pending"
+                    ScanStatus = "Pending",
+                    ProjectId = reader.GetInt32(2),
                 });
             }
 
@@ -70,6 +71,33 @@ namespace PasToMicroservice.DAL
             cmd.Parameters.AddWithValue("result", result ?? (object)DBNull.Value);
 
             await cmd.ExecuteNonQueryAsync();
+        }
+
+
+        //Added for subcommands
+        public async Task InsertPendingCommandsAsync(List<string> commands,int scanId,int projectId)
+        {
+            if (commands == null || commands.Count == 0)
+                return;
+
+            await using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            foreach (var command in commands)
+            {
+                string scanType = command.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+                string query = @"
+                    INSERT INTO scan_data (scan_type,command, scan_status,created_by,updated_by,triggered_by,parent_scan_id,project_id) 
+                    VALUES (@scantype,@command, 'Pending',1,1,1,@scanId,@project_id)";
+                Console.WriteLine(query);
+
+                await using var cmd = new NpgsqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("command", command);
+                cmd.Parameters.AddWithValue("scanId", scanId);
+                cmd.Parameters.AddWithValue("project_id", projectId);
+                cmd.Parameters.AddWithValue("scantype", scanType);
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
     }
 }

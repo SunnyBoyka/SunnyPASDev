@@ -9,7 +9,7 @@ namespace PasToMicroservice.BAL
 {
     public class CommandExecutor : ICommandExecutor
     {
-        public string ExecuteCommand(string command)
+        public (string output, List<string> enumCommands) ExecuteCommand(string command,int commandId)
         {
             //var process = new Process();
             //process.StartInfo.FileName = "/bin/bash";
@@ -51,7 +51,8 @@ namespace PasToMicroservice.BAL
 
             var enumCommands = NmapParser.BuildEnum4LinuxCommands(output);
 
-            return output + "\n" + error;
+
+            return (output, enumCommands);
         }
     }
 }

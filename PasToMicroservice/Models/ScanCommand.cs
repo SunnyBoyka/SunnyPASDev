@@ -13,6 +13,7 @@ namespace PasToMicroservice.Models
         public string ScanStatus { get; set; }
         public string ScanResult { get; set; }
         public DateTime? CompletedAt { get; set; }
+        public int ProjectId { get; set; }
     }
 
     public enum ScanStatus
