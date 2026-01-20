@@ -49,7 +49,7 @@ namespace PasToMicroservice.BAL
 
             process.WaitForExit();
 
-            var enumCommands = NmapParser.BuildEnum4LinuxCommands(output);
+            var enumCommands = NmapParser.BuildCommands(output);
 
 
             return (output, enumCommands);
