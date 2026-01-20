@@ -7,7 +7,7 @@ namespace PasToMicroservice.BAL
 {
     public class NmapParser
     {
-        public static List<string> BuildEnum4LinuxCommands(string nmapOutput)
+        public static List<string> BuildCommands(string nmapOutput)
         {
             var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
