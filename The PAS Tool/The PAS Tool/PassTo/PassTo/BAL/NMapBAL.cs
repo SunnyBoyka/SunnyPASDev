@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using PassTo.Models;
 using System.Data;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Utils;
 namespace PassTo.BAL
@@ -99,6 +100,7 @@ namespace PassTo.BAL
 
             foreach (var t in tasks)
             {
+                string cleanedCommand = RemoveIPAddress(t.Command);
                 Console.WriteLine($"ID: {t.Id}, CMD: {t.Command}");
                 ScanData ScanData = new ScanData
                 {
@@ -149,9 +151,57 @@ namespace PassTo.BAL
                 throw new Exception($"Error loading Command names: {src} ");
             }
         }
+
+
+        public static List<ScanDataDto> GetNmapScans()
+        {
+            try
+            {
+                var dt = DataAccessLayer.GetDataTable(SqlStatement.GetScanStatus);
+                List<ScanDataDto> scanStatus = dt.AsEnumerable()
+    .Select(row => new ScanDataDto
+    {
+        Id = row.Field<long>("id"),
+        ScanType = row.Field<string>("scan_type"),
+        Command = row.Field<string>("command"),
+        CreatedAt = row.Field<DateTime>("created_at"),
+        CompletedAt = row.Field<DateTime?>("completed_at"),
+        CreatedBy = row.Field<int?>("created_by"),
+        UpdatedBy = row.Field<int?>("updated_by"),
+        ScanStatus = row.Field<string>("scan_status"),
+        ScanResult = row.Field<string>("scan_result"),
+        TriggeredBy = row.Field<int?>("triggered_by")
+    })
+    .ToList();
+
+                return scanStatus;
+            }
+            catch (Exception ex)
+            {
+                string src = ex.ProcessException();
+                throw new Exception($"Error loading Command names: {src} ");
+            }
+        }
         public static string SaveScanData(ScanData ScanData)
         {
             return DataAccessLayer.ExecuteScalar(SqlStatement.InsertScanData, ScanData);
+        }
+
+        private static string RemoveIPAddress(string command)
+        {
+            if (string.IsNullOrWhiteSpace(command))
+                return command;
+
+            // IPv4 regex
+            string ipv4Pattern = @"\b(?:\d{1,3}\.){3}\d{1,3}\b";
+
+            // IPv6 regex
+            string ipv6Pattern = @"((?:(?:[A-F0-9]{1,4}):){7}[A-F0-9]{1,4})";
+
+            string cleaned = Regex.Replace(command, ipv4Pattern, "").Trim();
+            cleaned = Regex.Replace(cleaned, ipv6Pattern, "").Trim();
+
+            return cleaned;
         }
     }
 }

@@ -28,6 +28,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Home\NMapCommandPage.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\NMapCommandPage.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Utils\AESEncryptDecrypt.cs" />
     <Content Include="Utils\BasicAction.cs" />
     <Content Include="Utils\Utils.cs" />

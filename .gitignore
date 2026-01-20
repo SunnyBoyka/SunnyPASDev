@@ -1,17 +1,18 @@
-/PasToMicroservice/.vs
-/PasToMicroservice/bin
-/PasToMicroservice/obj
-/The PAS Tool/The PAS Tool/PassTo/PassTo/bin
-/The PAS Tool/The PAS Tool/PassTo/PassTo/.vs
-/The PAS Tool/The PAS Tool/PassTo/PassTo/obj
-/The PAS Tool/The PAS Tool/PassTo/.vs
-/The PAS Tool/The PAS Tool/PassTo/.vs/PassTo
-/The PAS Tool/The PAS Tool/PassTo/.vs/PassTo/CopilotIndices
-/The PAS Tool/The PAS Tool/PassTo/publish
+# Visual Studio
+.vs/
+**/.vs/
+*.vsidx
+
+# Build output
+bin/
+obj/
+publish/
+
+# Databases
 *.db
 *.db-shm
 *.db-wal
-*.db-shm
-*.vsidx
-*.vsidx
-/The PAS Tool/The PAS Tool/PassTo/.vs
+
+# Copilot / VS cache
+**/CopilotIndices/
+**/CodeChunks.db

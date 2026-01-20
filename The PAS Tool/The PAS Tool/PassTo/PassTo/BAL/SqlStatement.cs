@@ -124,7 +124,9 @@ namespace BAL
         public static readonly string InsertScanData = @"INSERT INTO scan_data(scan_type,command, created_at,created_by,updated_by,scan_status,scan_result,triggered_by) VALUES (@scan_type,@command, @created_at,@created_by,@updated_by,@scan_status,@scan_result,@triggered_by);";
         public static readonly string GetAllNMapCommands = "SELECT * FROM nmap_commands order by id"; 
         public static readonly string UpdateNMapCommandRunStatus = @"UPDATE nmap_command SET run_command = @Run_Command, last_update = @Last_Update WHERE id = @id";
+        public static readonly string Insertnmapcommand = @"INSERT INTO nmap_commands(command_name,description, created_at,updated_at,created_by,updated_by,is_active) VALUES (@command_name,@description, @created_at,@updated_at,@created_by,@updated_by,@is_active);";
 
+        public static readonly string GetScanStatus = "select * from scan_data";
         // passtool part
 
     }

@@ -173,5 +173,12 @@ namespace MinimalOverflow.Controllers
             string sID = GetSessionID();
             return "Session Id :" + sID + "\nAdmin Time :" + DateTime.Now.ToString("yyyyy:MM:dd: dddd HH:mm:ss");
         }
+
+        public ActionResult ScanStatus()
+        {
+            ViewBag.Message = "Your contact page.";
+            return View();
+        }
+
     }
 }

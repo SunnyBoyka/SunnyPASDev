@@ -7,11 +7,12 @@
     var indexApp = {
         start_action: function () {
             let start = true;
-           
+
             Promise.all([
                 BasicInfo.start_action("BasicInfo", null),
                 nMap.start_action("nMap", null),
                 NMapCommand.start_action("NMapCommand",null),
+                ScanStatus.start_action("ScanStatus",null),
             ]).then(values => {
                 indexApp.afterRender();
             });
@@ -32,8 +33,11 @@
             short_cut = {}; short_cut.id = "nMap"; short_cut.text = "NMap";
             short_cuts.push(short_cut);
 
-            
+
             short_cut = {}; short_cut.id = "NMapCommand"; short_cut.text = "NMapCommand";
+             short_cuts.push(short_cut);
+
+            short_cut = {}; short_cut.id = "ScanStatus"; short_cut.text = "ScanStatus";
              short_cuts.push(short_cut);
 
             Banner.Show_ShortCuts(short_cuts);
@@ -53,6 +57,5 @@
         }
     }; $(document).ready(() => indexApp.start_action())
 </script>
-@* <NMapCommand></NMapCommand> *@
-<BasicInfo></BasicInfo>
-<nMap></nMap> 
+
+<ScanStatus></ScanStatus>

@@ -99,6 +99,23 @@ namespace MinimalOverflow.Controllers
 
 
 
+
+        [HttpGet]
+        public IActionResult GetNmapScans()
+        {
+            try
+            {
+                var scanStatus = NMapBAL.GetNmapScans();
+                return Ok(scanStatus);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+
         public string SaveScanData()
         {
             try

@@ -15,15 +15,38 @@
         return new TemplateRenderer(data, tag, "~/Scripts/Components/NMapCommand/NMapCommand.html", null, false, true)
             .start_action()
             .then(async (jData) => {
-                await NMapCommand.LoadAllCommands();
-                NMapCommand.GetCommands();
-                NMapCommand.GenerateComm();
+                //await NMapCommand.LoadAllCommands();
+                //NMapCommand.GetCommands();
+               // NMapCommand.GenerateComm();
                 return "Done from Command";
             });
     },
+    addCommandToTable: function (command) {
+        const commandInput = document.getElementById('commandInput').value;
+        document.getElementById('commandInput').value = "";
+        if (!commandInput) {
+            alert('Please enter command.');
+            return;
+        }
+
+        // Split commands by comma and trim whitespace
+        const commandList = commandInput
+            .split(',')
+            .map((cmd, index) => ({
+                id: index + 1,
+                command_name: cmd.trim()
+            }))
+            .filter(item => item.command_name.length > 0);
+
+        // ✅ Close modal after adding
+        let modal = bootstrap.Modal.getInstance(document.getElementById('commandModal'));
+        modal.hide();
+        NMapCommand.RenderCommandTable(commandList);
+
+
+    },
     LoadAllCommands: function () {
         $("#commandStatus").text("Loading...").removeClass('text-bg-danger text-bg-success').addClass('text-bg-info');
-       
 
         return $.ajax({
             url: config.contextPath + 'home/GetAllNMapCommands',
@@ -50,68 +73,98 @@
         });
     },
     RenderCommandTable: function (commands) {
+
         if (!commands || commands.length === 0) {
             $("#CommandTable").html('<div class="alert alert-info">No commands found</div>');
             return;
         }
 
-        var ipAddress = $('#ipaddress_con').val();
-        let tableHtml = `
-            <table class="table table-striped table-hover table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th style="width: 80px;">${NMapCommand.header_mapping.checkbox}</th>
-                        <th>${NMapCommand.header_mapping.command}</th>
-                       <!-- <th style="width: 200px;">${NMapCommand.header_mapping.run_command}</th>-->
-                        <th>${NMapCommand.header_mapping.info}</th>
-                    </tr>
-                </thead>
-                <tbody>
+        //var ipAddress = $('#ipaddress_con').val();
+        //let tableHtml = `
+        //    <table class="table table-striped table-hover table-bordered">
+        //        <thead class="table-dark">
+        //            <tr>
+        //                <th style="width: 80px;">${NMapCommand.header_mapping.checkbox}</th>
+        //                <th>${NMapCommand.header_mapping.command}</th>
+        //               <!-- <th style="width: 200px;">${NMapCommand.header_mapping.run_command}</th>-->
+        //                <!--<th>${NMapCommand.header_mapping.info}</th>-->
+        //            </tr>
+        //        </thead>
+        //        <tbody>
+        //`;
+
+        //commands.forEach(function (row) {
+        //    debugger;
+        //    let checked = row.run_command === true || row.run_command === 'true' || row.run_command === 1 || row.run_command === '1' ? 'checked' : '';
+        //    let labelText = checked ? 'Enabled' : 'Disabled';
+        //    let lastUpdate = row.last_update ? moment(row.last_update).format('ddd, MMM DD, YYYY HH:mm') : 'Never';
+
+        //    tableHtml += `
+        //        <tr>
+        //            <td class="text-center align-middle">
+        //                <div class="form-check">
+        //                    <input class="form-check-input command-checkbox"
+        //                           type="checkbox"
+        //                           ${checked}
+        //                           data-id="${row.id}"
+        //                           id="cmd_${row.id}"
+        //                           style="cursor: pointer;">
+        //                    <!--<label class="form-check-label" for="cmd_${row.id}" style="cursor: pointer;">
+        //                        //${labelText}
+        //                    </label>-->
+        //                </div>
+        //            </td>
+        //            <td class="align-middle">
+        //                <span class="fs-small fw-bold">${row.command_name || ''}</span>
+        //            </td>
+        //            <!--<td class="align-middle">
+        //                <span class="fs-small fw-bold">${row.description || ''}</span>
+        //            </td>-->
+        //            <!--<td class="text-center align-middle">
+        //                <button class="btn btn-outline-info btn-sm" onclick="NMapCommand.ShowCommandInfo(event)"
+        //                        data-command='${JSON.stringify(row).replace(/'/g, "&apos;")}'>
+        //                    <i class="bi bi-info-circle" style="pointer-events:none;"></i>Info
+        //                </button>
+        //            </td>-->
+        //        </tr>
+        //    `;
+        //});
+
+        //tableHtml += `
+        //        </tbody>
+        //    </table>
+        //`;
+
+        //$("#CommandTable").html(tableHtml);
+
+        const tbody = document.getElementById("commandTableBody");
+
+        // If table is EMPTY → clear and create fresh rows
+        if (tbody.children.length === 0) {
+            tbody.innerHTML = ""; // optional clear
+        }
+
+        // Append rows
+        commands.forEach(cmd => {
+            const rowHtml = `
+            <tr id="row_${cmd.id}">
+                <td class="text-center align-middle">
+                    <div class="form-check">
+                        <input class="form-check-input command-checkbox"
+                            type="checkbox"
+                            data-id="${cmd.id}"
+                            id="cmd_${cmd.id}"
+                            style="cursor: pointer;">
+                    </div>
+                </td>
+                <td class="align-middle">
+                    <span class="fs-small fw-bold">${cmd.command_name}</span>
+                </td>
+            </tr>
         `;
 
-        commands.forEach(function (row) {
-            //debugger;
-            let checked = row.run_command === true || row.run_command === 'true' || row.run_command === 1 || row.run_command === '1' ? 'checked' : '';
-            let labelText = checked ? 'Enabled' : 'Disabled';
-            let lastUpdate = row.last_update ? moment(row.last_update).format('ddd, MMM DD, YYYY HH:mm') : 'Never';
-
-            tableHtml += `
-                <tr>
-                    <td class="text-center align-middle">
-                        <div class="form-check">
-                            <input class="form-check-input command-checkbox"
-                                   type="checkbox"
-                                   ${checked} 
-                                   data-id="${row.id}" 
-                                   id="cmd_${row.id}"
-                                   style="cursor: pointer;">
-                            <!--<label class="form-check-label" for="cmd_${row.id}" style="cursor: pointer;">
-                                //${labelText}
-                            </label>-->
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <span class="fs-small fw-bold">${row.command_name || ''}${ipAddress}</span>
-                    </td>
-                    <td class="align-middle">
-                        <span class="fs-small fw-bold">${row.description || ''}</span>
-                    </td>
-                    <!--<td class="text-center align-middle">
-                        <button class="btn btn-outline-info btn-sm" onclick="NMapCommand.ShowCommandInfo(event)"
-                                data-command='${JSON.stringify(row).replace(/'/g, "&apos;")}'>
-                            <i class="bi bi-info-circle" style="pointer-events:none;"></i>Info
-                        </button>
-                    </td>-->
-                </tr>
-            `;
+            tbody.insertAdjacentHTML("beforeend", rowHtml);
         });
-
-        tableHtml += `
-                </tbody>
-            </table>
-        `;
-
-        $("#CommandTable").html(tableHtml);
 
         $(".command-checkbox").on('change', function () {
             let label = $(this).next('label');
@@ -423,7 +476,7 @@
 
                     // Reload the table to get updated Last_Update times
                     setTimeout(() => {
-                        NMapCommand.LoadAllCommands();
+                        //NMapCommand.LoadAllCommands();
                     }, 1500);
                 } else {
                     $("#commandStatus").text("Error occurred while updating")
@@ -473,6 +526,7 @@
 
     // pass tool part 
     GetCommands: function () {
+
         $.ajax({
             url: config.contextPath + "Home/GetCommands",
             type: "GET",
