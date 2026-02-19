@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
 using System.Diagnostics;
 using System.Net;
-using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace PasToMicroservice.BAL
 {
-    public class NmapParser
+    public class NmapParser_v1
     {
         public static List<string> BuildCommands(string nmapOutput)
         {
@@ -278,158 +276,75 @@ puts ""Task ID:   $TASK_ID""
                 }
                 string portList = string.Join(",", ports);
 
-            #region exp Filecreator
-            //            // 4. Build the expect command - NOT using C# string interpolation for the expect script itself
-            //            string scanId = Guid.NewGuid().ToString("N").Substring(0, 6);
-            //            string fileName = "auto_web_scan_" + scanId;
-            //            string filePath =  fileName + ".exp";
 
-            //            string expectScript =
-            //"#!/usr/bin/expect -f\n" +
-            //"set timeout 60\n" +
-            //"log_user 1\n" +
-            //"\n" +
-            //"set USER \"" + username + "\"\n" +
-            //"set PASS \"" + password + "\"\n" +
-            //"set TARGET_NAME \"" + targetName + "\"\n" +
-            //"set TARGET_IP \"" + ipAddress + "\"\n" +
-            //"set PORTS \"" + portList + "\"\n" +
-            //"set TASK_NAME \"" + fileName + "\"\n" +
-            //"\n" +
-            //"# Full and fast scan config UUID\n" +
-            //"set CONFIG_ID \"daba56c8-73ec-11df-a475-002264764cea\"\n" +
-            //"\n" +
-            //"proc auth {} {\n" +
-            //"  expect {\n" +
-            //"    -re {Enter username.*} { send \"$::USER\\r\"; exp_continue }\n" +
-            //"    -re {Enter password.*} { send \"$::PASS\\r\" }\n" +
-            //"  }\n" +
-            //"}\n" +
-            //"\n" +
-            //"# Create target\n" +
-            //"spawn sudo -u _gvm gvm-cli socket --xml \"<create_target><name>$TARGET_NAME</name><hosts>$TARGET_IP</hosts><port_range>$PORTS</port_range></create_target>\"\n" +
-            //"auth\n" +
-            //"\n" +
-            //"set TARGET_ID \"\"\n" +
-            //"expect {\n" +
-            //"  -re {id=\\\"([a-f0-9-]+)\\\"} {\n" +
-            //"    set TARGET_ID $expect_out(1,string)\n" +
-            //"  }\n" +
-            //"  -re {Target exists already} {\n" +
-            //"    spawn sudo -u _gvm gvm-cli socket --xml \"<get_targets/>\"\n" +
-            //"    auth\n" +
-            //"    expect -re {id=\\\"([a-f0-9-]+)\\\"}\n" +
-            //"    set TARGET_ID $expect_out(1,string)\n" +
-            //"  }\n" +
-            //"}\n" +
-            //"\n" +
-            //"if {$TARGET_ID == \"\"} {\n" +
-            //"  puts \"ERROR: TARGET_ID not found\"\n" +
-            //"  exit 1\n" +
-            //"}\n" +
-            //"\n" +
-            //"# Create task (Full and fast)\n" +
-            //"spawn sudo -u _gvm gvm-cli socket --xml \"<create_task><name>$TASK_NAME</name><config id=\\\"$CONFIG_ID\\\"/><target id=\\\"$TARGET_ID\\\"/></create_task>\"\n" +
-            //"auth\n" +
-            //"\n" +
-            //"set TASK_ID \"\"\n" +
-            //"expect -re {id=\\\"([a-f0-9-]+)\\\"}\n" +
-            //"set TASK_ID $expect_out(1,string)\n" +
-            //"\n" +
-            //"if {$TASK_ID == \"\"} {\n" +
-            //"  puts \"ERROR: TASK_ID is empty\"\n" +
-            //"  exit 1\n" +
-            //"}\n" +
-            //"\n" +
-            //"# Start scan\n" +
-            //"spawn sudo -u _gvm gvm-cli socket --xml \"<start_task task_id=\\\"$TASK_ID\\\"/>\"\n" +
-            //"auth\n" +
-            //"expect eof\n" +
-            //"\n" +
-            //"puts \"Scan started successfully\"\n" +
-            //"puts \"Task Name: $TASK_NAME\"\n" +
-            //"puts \"Task ID:   $TASK_ID\"\n";
+            // 4. Build the expect command - NOT using C# string interpolation for the expect script itself
+            string fileName = $"auto_web_scan_{Guid.NewGuid():N}";
+            string filePath = $"{fileName}.exp";
 
+            // 2️⃣ Expect script (task name = filename)
+            string expectScript =
+                "#!/usr/bin/expect -f\n" +
+                "set timeout 30\n" +
+                "log_user 1\n" +
 
+                "# ---- Derive task name from script filename ----\n" +
+                "set SCRIPT_PATH [info script]\n" +
+                "set TASK_NAME   [file rootname [file tail $SCRIPT_PATH]]\n" +
 
+                $"set USER {username}\n" +
+                $"set PASS {password}\n" +
+                $"set TARGET_NAME {targetName}\n" +
+                $"set TARGET_IP {ipAddress}\n" +
+                $"set PORTS \"{portList}\"\n" +
 
+                "proc auth {} {\n" +
+                "  expect {\n" +
+                "    -re {Enter username.*} { send \"$::USER\\r\"; exp_continue }\n" +
+                "    -re {Enter password.*} { send \"$::PASS\\r\" }\n" +
+                "  }\n" +
+                "}\n" +
 
-            //            //string expectScript =
-            //            //"#!/usr/bin/expect -f\n" +
-            //            //"set timeout 60\n" +
-            //            //"log_user 1\n" +
-            //            //"\n" +
-            //            //"set USER " + username + "\n" +
-            //            //"set PASS " + password + "\n" +
-            //            //"set TARGET_NAME " + targetName + "\n" +
-            //            //"set TARGET_IP " + ipAddress + "\n" +
-            //            //"set PORTS \"" + portList + "\"\n" +
-            //            //"\n" +
-            //            //"set TASK_NAME " + fileName + "\n" +
-            //            //"\n" +
-            //            //"proc auth {} {\n" +
-            //            //"  expect {\n" +
-            //            //"    -re {Enter username.*} { send \"$::USER\\r\"; exp_continue }\n" +
-            //            //"    -re {Enter password.*} { send \"$::PASS\\r\" }\n" +
-            //            //"  }\n" +
-            //            //"}\n" +
-            //            //"\n" +
-            //            //"spawn sudo -u _gvm gvm-cli socket --xml \"<create_target><name>$TARGET_NAME</name><hosts>$TARGET_IP</hosts><port_range>$PORTS</port_range></create_target>\"\n" +
-            //            //"auth\n" +
-            //            //"set TARGET_ID \"\"\n" +
-            //            //"\n" +
-            //            //"expect {\n" +
-            //            //"  -re {id=\\\"([a-f0-9-]+)\\\"} { set TARGET_ID $expect_out(1,string) }\n" +
-            //            //"  -re {Target exists already} {\n" +
-            //            //"    spawn sudo -u _gvm gvm-cli socket --xml \"<get_targets/>\"\n" +
-            //            //"    auth\n" +
-            //            //"    expect -re {" + targetName + ".*id=\\\"([a-f0-9-]+)\\\"}\n" +
-            //            //"    set TARGET_ID $expect_out(1,string)\n" +
-            //            //"  }\n" +
-            //            //"}\n" +
-            //            //"\n" +
-            //            //"spawn sudo -u _gvm gvm-cli socket --xml \"<get_configs/>\"\n" +
-            //            //"auth\n" +
-            //            //"expect -re {<config id=\\\"([a-f0-9-]+)\\\">.*<name>Full and fast</name>}\n" +
-            //            //"set CONFIG_ID $expect_out(1,string)\n" +
-            //            //"\n" +
-            //            //"spawn sudo -u _gvm gvm-cli socket --xml \"<create_task><name>$TASK_NAME</name><config id=\\\"$CONFIG_ID\\\"/><target id=\\\"$TARGET_ID\\\"/></create_task>\"\n" +
-            //            //"auth\n" +
-            //            //"expect -re {id=\\\"([a-f0-9-]+)\\\"}\n" +
-            //            //"set TASK_ID $expect_out(1,string)\n" +
-            //            //"\n" +
-            //            //"spawn sudo -u _gvm gvm-cli socket --xml \"<start_task task_id=\\\"$TASK_ID\\\"/>\"\n" +
-            //            //"auth\n" +
-            //            //"expect eof\n" +
-            //            //"\n" +
-            //            //"puts \"Scan started successfully\"\n" +
-            //            //"puts \"Task Name: $TASK_NAME\"\n" +
-            //            //"puts \"Task ID:   $TASK_ID\"\n";
+                "spawn sudo -u _gvm gvm-cli socket --xml " +
+                "\"<create_target><name>$TARGET_NAME</name><hosts>$TARGET_IP</hosts><port_range>$PORTS</port_range></create_target>\"\n" +
+                "auth\n" +
+                "set TARGET_ID \"\"\n" +
 
-            //            File.WriteAllText(filePath, expectScript);
+                "expect {\n" +
+                "  -re {id=\\\"([a-f0-9-]+)\\\"} { set TARGET_ID $expect_out(1,string) }\n" +
+                "  -re {Target exists already} {\n" +
+                "    spawn sudo -u _gvm gvm-cli socket --xml \"<get_targets/>\"\n" +
+                "    auth\n" +
+                $"    expect -re {{{targetName}.*id=\\\"([a-f0-9-]+)\\\"}}\n" +
+                "    set TARGET_ID $expect_out(1,string)\n" +
+                "  }\n" +
+                "}\n" +
 
-            //            commands.Add("expect "+filePath);
-            //            commands.Add("expect taskid.exp auto_web_scan_0bf911");
-            #endregion
+                "spawn sudo -u _gvm gvm-cli socket --xml \"<get_configs/>\"\n" +
+                "auth\n" +
+                "expect -re {Full and fast.*id=\\\"([a-f0-9-]+)\\\"}\n" +
+                "set CONFIG_ID $expect_out(1,string)\n" +
 
-            //commands.Add("dotnet ../OpenvasScanner/OpenVasScanner.dll  " + ipAddress+" "+portList);
+                "spawn sudo -u _gvm gvm-cli socket --xml " +
+                "\"<create_task><name>$TASK_NAME</name><config id=\\\"$CONFIG_ID\\\"/>" +
+                "<target id=\\\"$TARGET_ID\\\"/></create_task>\"\n" +
+                "auth\n" +
+                "expect -re {id=\\\"([a-f0-9-]+)\\\"}\n" +
+                "set TASK_ID $expect_out(1,string)\n" +
 
-            //ZapScanner part
-            
-            commands.Add("nikto - h " + ipAddress+" - C all");
-            commands.Add("dotnet ../ZapScanner/ZapScanner.dll  http://" + ipAddress);
-            commands.Add("zaproxy -cmd -autorun /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/zap-automation.yaml");
-            commands.Add("sqlmap -u http://" + ipAddress + " –crawl=3 –forms –level=5 –risk=3 --batch --threads=3 --timeout=10");
-            commands.Add("snmpwalk -v2c -c public " + ipAddress);
-            commands.Add("sslyze " + ipAddress);
-            commands.Add("dnsrecon -r " + ipAddress+"/32");
-            commands.Add("hydra -L /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/users.txt -P /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/passwords.txt -t 2 -W 5 -f " + ipAddress + " http-get");
-            commands.Add("nmap -sU -p 123 --script ntp-* " + ipAddress);
-            commands.Add("nmap -sU -p 123 --script ntp-info " + ipAddress);
-            commands.Add("hydra -L /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/users.txt -P /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/passwords.txt -t 2 -W 5 -f " + ipAddress + " ftp");
-            commands.Add("hydra -L /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/users.txt -P /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/passwords.txt -t 2 -W 5 -f " + ipAddress + " ssh");
+                "spawn sudo -u _gvm gvm-cli socket --xml " +
+                "\"<start_task task_id=\\\"$TASK_ID\\\"/>\"\n" +
+                "auth\n" +
+                "expect eof\n" +
 
-            return commands;
+                "puts \"\\nScan started successfully\"\n" +
+                "puts \"Task Name: $TASK_NAME\"\n" +
+                "puts \"Target ID: $TARGET_ID\"\n" +
+                "puts \"Task ID:   $TASK_ID\"\n";
+
+            File.WriteAllText(filePath, expectScript);
+
+            commands.Add("expect "+filePath);
+                return commands;
             }
     }
 }

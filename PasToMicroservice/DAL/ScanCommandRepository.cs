@@ -89,7 +89,7 @@ namespace PasToMicroservice.DAL
                 string query = @"
                     INSERT INTO scan_data (scan_type,command, scan_status,created_by,updated_by,triggered_by,parent_scan_id,project_id) 
                     VALUES (@scantype,@command, 'Pending',1,1,1,@scanId,@project_id)";
-                Console.WriteLine(query);
+                //Console.WriteLine(query);
 
                 await using var cmd = new NpgsqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("command", command);

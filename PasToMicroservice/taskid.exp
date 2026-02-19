@@ -1,0 +1,52 @@
+#!/usr/bin/expect -f
+
+set timeout 30
+
+# -------- CONFIG --------
+set USER admin
+set PASS admin
+
+if { $argc != 1 } {
+    puts "Usage: ./get_task_id_by_name.exp <TASK_NAME>"
+    exit 1
+}
+
+set TASK_NAME [lindex $argv 0]
+set TASK_ID ""
+
+# -------- EXEC --------
+spawn sudo -u _gvm gvm-cli socket --xml "<get_tasks/>"
+
+expect {
+    -re {Enter username.*} {
+        send "$USER\r"
+        exp_continue
+    }
+    -re {Enter password.*} {
+        send "$PASS\r"
+    }
+}
+
+# -------- PARSE TASK ID --------
+expect {
+    -re {<task id="([a-f0-9-]+)".*?<name>} {
+        # capture task id first
+        set CURRENT_ID $expect_out(1,string)
+        exp_continue
+    }
+    -re "<name>$TASK_NAME</name>" {
+        set TASK_ID $CURRENT_ID
+        exp_continue
+    }
+    eof
+}
+
+# -------- OUTPUT --------
+if { $TASK_ID eq "" } {
+    puts "ERROR: Task not found: $TASK_NAME"
+    exit 1
+}
+
+puts $TASK_ID
+exit 0
+
