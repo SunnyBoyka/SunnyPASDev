@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using PasToMicroservice.DAL;
+using PasToMicroservice.Models;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -7,8 +9,16 @@ using System.Text.RegularExpressions;
 
 namespace PasToMicroservice.BAL
 {
-    public class NmapParser
+    public class ScanService
     {
+        private readonly IScanCommandRepository _scanCommandRepo;
+
+        public ScanService(IScanCommandRepository scanCommandRepo)
+        {
+            _scanCommandRepo = scanCommandRepo;
+        }
+
+        #region BuildCommands Old
         public static List<string> BuildCommands(string nmapOutput)
         {
             var configuration = new ConfigurationBuilder()
@@ -249,34 +259,43 @@ puts ""Task ID:   $TASK_ID""
             return commands;
         }
 
-        public static List<string> BuildGvmScanCommand(string nmapOutput, string targetName = "auto-web-target", string username = "admin", string password = "admin")
+
+        #endregion
+
+
+        public async Task<List<string>> BuildGvmScanCommand(string nmapOutput, int commandId, int ProjectId, int JobId, string targetName = "auto-web-target", string username = "admin", string password = "admin")
+        {
+            var commands = new List<string>();
+
+            // 1. Extract IP address
+            var ipMatch = Regex.Match(nmapOutput, @"Nmap scan report for\s+([0-9\.]+)");
+            if (!ipMatch.Success)
+                return commands;
+
+            string ipAddress = ipMatch.Groups[1].Value;
+
+            // 2. Extract all open Ports & Services
+            //var portMatches = Regex.Matches(nmapOutput,@"(\d+)/tcp\s+open",RegexOptions.IgnoreCase); //Only Ports
+            var portMatches = Regex.Matches(nmapOutput, @"(\d+)/tcp\s+open\s+([^\s]+)", RegexOptions.IgnoreCase);
+
+            if (portMatches.Count == 0)
+                return commands;
+
+            // Store port and service
+            var portServiceList = new List<KeyValuePair<string, string>>();
+
+            // 3. Build comma-separated port list
+            foreach (Match match in portMatches)
             {
-                var commands = new List<string>();
+                string port = match.Groups[1].Value;
+                string service = match.Groups[2].Value;
 
-                // 1. Extract IP address
-                var ipMatch = Regex.Match(nmapOutput, @"Nmap scan report for\s+([0-9\.]+)");
-                if (!ipMatch.Success)
-                    return commands;
+                portServiceList.Add(new KeyValuePair<string, string>(port, service));
+            }
 
-                string ipAddress = ipMatch.Groups[1].Value;
-
-                // 2. Extract all open ports
-                var portMatches = Regex.Matches(
-                    nmapOutput,
-                @"(\d+)/tcp\s+open",
-                RegexOptions.IgnoreCase
-                );
-
-                if (portMatches.Count == 0)
-                    return commands;
-
-                // 3. Build comma-separated port list
-                var ports = new List<string>();
-                foreach (Match portMatch in portMatches)
-                {
-                    ports.Add(portMatch.Groups[1].Value);
-                }
-                string portList = string.Join(",", ports);
+            //Build comma-separated port list 
+            var ports = portServiceList.Select(p => p.Key).ToList();
+            string portList = string.Join(",", ports);
 
             #region exp Filecreator
             //            // 4. Build the expect command - NOT using C# string interpolation for the expect script itself
@@ -412,24 +431,224 @@ puts ""Task ID:   $TASK_ID""
             //            commands.Add("expect taskid.exp auto_web_scan_0bf911");
             #endregion
 
-            //commands.Add("dotnet ../OpenvasScanner/OpenVasScanner.dll  " + ipAddress+" "+portList);
+            var services = portServiceList.Select(p => p.Value.ToLower().Trim()).ToList();
 
-            //ZapScanner part
-            
-            commands.Add("nikto - h " + ipAddress+" - C all");
-            commands.Add("dotnet ../ZapScanner/ZapScanner.dll  http://" + ipAddress);
-            commands.Add("zaproxy -cmd -autorun /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/zap-automation.yaml");
+            //Get the services enables for the project - Recon Tools
+            var reconTools = await _scanCommandRepo.GetReconToolsAsync(ProjectId);
+            // Helper to fetch ports by service (flexible matching)
+            Func<string, List<string>> getPortsByService = (serviceName) => portServiceList.Where(p => p.Value != null && p.Value.ToLower().Contains(serviceName.ToLower()))
+                    .Select(p => p.Key).ToList();
+
+            //Parsing services based on tools
+            foreach (var tool in reconTools)
+            {
+                var toolName = tool.ToolName?.Trim().ToLower();
+
+                switch (toolName)
+                {
+                    case "nmap":
+                        // SSH
+                        var sshPorts = getPortsByService("ssh");
+                        if (sshPorts.Any())
+                        {
+                            commands.Add($"nmap --script ssh-auth-methods -p {string.Join(",", sshPorts)} {ipAddress}");
+                        }
+
+                        // HTTP / Web services
+                        var webPorts = getPortsByService("http")
+                            .Concat(getPortsByService("ov-nnm-websrv"))
+                            .Distinct()
+                            .ToList();
+
+                        if (webPorts.Any())
+                        {
+                            commands.Add($"nmap --script http-title,http-enum -p {string.Join(",", webPorts)} {ipAddress}");
+                        }
+
+                        // Modbus (mbap)
+                        var modbusPorts = getPortsByService("mbap");
+                        if (modbusPorts.Any())
+                        {
+                            commands.Add($"nmap --script modbus-discover -p {string.Join(",", modbusPorts)} {ipAddress}");
+                            commands.Add($"nmap --script modbus-enum -p {string.Join(",", modbusPorts)} {ipAddress}");
+                            commands.Add("msfconsole -q -x 'use auxiliary/scanner/scada/modbusdetect; set RHOSTS " + ipAddress + "; run; exit'");
+                        }
+
+                        // EtherNet/IP
+                        var enipPorts = getPortsByService("ethernetip");
+                        if (enipPorts.Any())
+                        {
+                            commands.Add($"nmap --script enip-info -p {string.Join(",", enipPorts)} {ipAddress}");
+                            commands.Add("msfconsole -q -x 'use auxiliary/scanner/scada/cip_enumeration; set RHOSTS " + ipAddress + ";  run; exit'");
+                        }
+                        
+                        // NTP
+                        var ntpPorts = getPortsByService("ntp");
+                        if (ntpPorts.Any())
+                        {
+                            commands.Add($"nmap -sU -p {string.Join(",", ntpPorts)} --script ntp-* {ipAddress}");
+                            commands.Add($"nmap -sU -p {string.Join(", ", ntpPorts)} --script ntp-info {ipAddress}");
+                        }
+
+                        // SNMP
+                        var snmpPorts = getPortsByService("snmp");
+                        if (snmpPorts.Any())
+                        {
+                            var snmports = string.Join(",", snmpPorts);
+                            // Nmap SNMP scripts
+                            commands.Add($"nmap -sU -p {snmports} --script snmp-info {ipAddress}");
+                            commands.Add($"nmap -sU -p {snmports} --script snmp-brute {ipAddress}");
+                            // SNMP enumeration (default community string)
+                            commands.Add($"snmpwalk -v2c -c public {ipAddress}");
+                        }
+
+                        // Optional: full scan
+                        //commands.Add($"nmap -sC -sV -p {portList} {ipAddress}");
+
+                        break;
+
+
+                    case "masscan":
+                        commands.Add($"masscan {ipAddress} -p{portList} --rate=1000");
+                        break;
+
+
+                    case "amass":
+                        // Better only for domain, but keeping fallback
+                        commands.Add($"amass enum -passive -d {ipAddress}");
+                        break;
+
+
+                    case "dnsrecon":
+                        commands.Add($"dnsrecon -r {ipAddress}/32");
+                        break;
+
+
+                    case "theharvester":
+                        commands.Add($"theHarvester -d {ipAddress} -b all");
+                        break;
+
+                    case "sslyze":
+                        commands.Add("sslyze " + ipAddress);
+                        break;
+                        
+                }
+            }
+
+            //VS Tools of Project
+            var vsTools = await _scanCommandRepo.GetVSToolsAsync(ProjectId);
+            foreach (var tool in vsTools)
+            {
+                var toolName = tool.ToolName?.Trim().ToLower();
+
+                switch (toolName)
+                {
+                    case "openvas":
+                        commands.Add($"dotnet ../Openvas/OpenVasScanner.dll {ipAddress} {portList}");
+                        break;
+
+                    case "nikto":
+                        commands.Add("nikto -h " + ipAddress + " -C all -ask no");
+                        break;
+
+                    case "sqlmap":
+                        commands.Add("sqlmap -u http://" + ipAddress + " –crawl=3 –forms –level=5 –risk=3 --batch --threads=3 --timeout=10");
+                        break;
+
+                    case "zap":
+                        commands.Add("dotnet ../Zap/ZapScanner.dll  http://" + ipAddress);
+                        commands.Add("zaproxy -cmd -autorun /home/customkali/Desktop/PasTool/Microservice/PasService/zap-automation.yaml");
+                        break;
+                }
+            }
+
+            //Exploit Tools of Project
+            var exploitTools = await _scanCommandRepo.GetExploitToolsAsync(ProjectId);
+            foreach (var tool in exploitTools)
+            {
+                var toolName = tool.ToolName?.Trim().ToLower();
+
+                switch (toolName)
+                {
+                    //case "metasploit-framework":
+
+                    //    // Generic scan (can import Nmap results if needed)
+                    //    commands.Add($"msfconsole -q -x \"db_nmap {ipAddress}; exit\"");
+
+                    //    // SSH exploitation (if SSH exists)
+                    //    var sshPorts = getPortsByService("ssh");
+                    //    if (sshPorts.Any())
+                    //    {
+                    //        commands.Add(
+                    //            $"msfconsole -q -x \"use auxiliary/scanner/ssh/ssh_login; " +
+                    //            $"set RHOSTS {ipAddress}; set RPORT {string.Join(",", sshPorts)}; " +
+                    //            $"set USER_FILE users.txt; set PASS_FILE passwords.txt; run; exit\""
+                    //        );
+                    //    }
+
+                    //    // Modbus (ICS)
+                    //    var modbusPorts = getPortsByService("mbap");
+                    //    if (modbusPorts.Any())
+                    //    {
+                    //        commands.Add(
+                    //            $"msfconsole -q -x \"use auxiliary/scanner/scada/modbusdetect; " +
+                    //            $"set RHOSTS {ipAddress}; run; exit\""
+                    //        );
+                    //    }
+
+                    //    // EtherNet/IP
+                    //    var enipPorts = getPortsByService("ethernetip");
+                    //    if (enipPorts.Any())
+                    //    {
+                    //        commands.Add(
+                    //            $"msfconsole -q -x \"use auxiliary/scanner/scada/cip_enumeration; " +
+                    //            $"set RHOSTS {ipAddress}; run; exit\""
+                    //        );
+                    //    }
+
+                    //    break;
+
+
+                    case "hydra":                        
+                        commands.Add("hydra -L /home/customkali/Desktop/PasTool/Microservice/PasService/users.txt -P /home/customkali/Desktop/PasTool/Microservice/PasService/passwords.txt -t 2 -W 5 -f " + ipAddress + " http-get");
+                        commands.Add("hydra -L /home/customkali/Desktop/PasTool/Microservice/PasService/users.txt -P /home/customkali/Desktop/PasTool/Microservice/PasService/passwords.txt -t 2 -W 5 -f " + ipAddress + " ftp");
+                        commands.Add("hydra -L /home/customkali/Desktop/PasTool/Microservice/PasService/users.txt -P /home/customkali/Desktop/PasTool/Microservice/PasService/passwords.txt -t 2 -W 5 -f " + ipAddress + " ssh");
+
+
+
+                        break;
+                }
+            }
+
+            /*
+            commands.Add("nikto -h " + ipAddress + " -C all -ask no");
+            commands.Add("dotnet ../Zap/ZapScanner.dll  http://" + ipAddress);
+            commands.Add("zaproxy -cmd -autorun /home/customkali/Desktop/PasTool/Microservice/PasService/zap-automation.yaml");
             commands.Add("sqlmap -u http://" + ipAddress + " –crawl=3 –forms –level=5 –risk=3 --batch --threads=3 --timeout=10");
             commands.Add("snmpwalk -v2c -c public " + ipAddress);
             commands.Add("sslyze " + ipAddress);
-            commands.Add("dnsrecon -r " + ipAddress+"/32");
-            commands.Add("hydra -L /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/users.txt -P /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/passwords.txt -t 2 -W 5 -f " + ipAddress + " http-get");
+            commands.Add("dnsrecon -r " + ipAddress + "/32");
+            commands.Add("hydra -L /home/customkali/Desktop/PasTool/Microservice/PasService/users.txt -P /home/customkali/Desktop/PasTool/Microservice/PasService/passwords.txt -t 2 -W 5 -f " + ipAddress + " http-get");
             commands.Add("nmap -sU -p 123 --script ntp-* " + ipAddress);
             commands.Add("nmap -sU -p 123 --script ntp-info " + ipAddress);
-            commands.Add("hydra -L /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/users.txt -P /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/passwords.txt -t 2 -W 5 -f " + ipAddress + " ftp");
-            commands.Add("hydra -L /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/users.txt -P /home/customkali/Desktop/PASToolDevDocs/Microservice/Service/passwords.txt -t 2 -W 5 -f " + ipAddress + " ssh");
+            commands.Add("hydra -L /home/customkali/Desktop/PasTool/Microservice/PasService/users.txt -P /home/customkali/Desktop/PasTool/Microservice/PasService/passwords.txt -t 2 -W 5 -f " + ipAddress + " ftp");
+            commands.Add("hydra -L /home/customkali/Desktop/PasTool/Microservice/PasService/users.txt -P /home/customkali/Desktop/PasTool/Microservice/PasService/passwords.txt -t 2 -W 5 -f " + ipAddress + " ssh");
+
+
+            //Port 502 Modbus
+            commands.Add("nmap --script modbus-discover -p 502 " + ipAddress);
+            commands.Add("nmap --script modbus-enum -p 502 " + ipAddress);
+            commands.Add("msfconsole -q -x 'use auxiliary/scanner/scada/modbusdetect; set RHOSTS " + ipAddress + "; run; exit'");
+
+
+            //Port 44818  EtherNet/IP
+            commands.Add("nmap --script enip-info -p 44818 " + ipAddress);
+            commands.Add("msfconsole -q -x 'use auxiliary/scanner/scada/cip_enumeration; set RHOSTS " + ipAddress + ";  run; exit'");
+
+            commands.Add("dotnet ../Openvas/OpenVasScanner.dll  " + ipAddress + " " + portList);
+            */
 
             return commands;
-            }
+        }
     }
 }

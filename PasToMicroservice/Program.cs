@@ -49,7 +49,8 @@ class Program
 
         // Initialize DAL and BAL
         var repository = new ScanCommandRepository(connStr);
-        var executor = new CommandExecutor();
+        var scanService = new ScanService(repository);
+        var executor = new CommandExecutor(scanService);
         var processorService = new CommandProcessorService(repository, executor);
 
         while (true)

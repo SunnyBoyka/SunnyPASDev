@@ -8,6 +8,6 @@ namespace PasToMicroservice.BAL
 {
     public interface ICommandExecutor
     {
-        (string output, List<string> enumCommands) ExecuteCommand(string command,int commandId);
+        public Task<(string output, List<string> enumCommands)> ExecuteCommandAsync(string command, int commandId, int ProjectId, int JobId);
     }
 }

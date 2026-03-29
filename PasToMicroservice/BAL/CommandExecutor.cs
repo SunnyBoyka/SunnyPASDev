@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PasToMicroservice.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +10,13 @@ namespace PasToMicroservice.BAL
 {
     public class CommandExecutor : ICommandExecutor
     {
-        public (string output, List<string> enumCommands) ExecuteCommand(string command,int commandId)
+        private readonly ScanService _scanService;
+
+        public CommandExecutor(ScanService scanService)
+        {
+            _scanService = scanService;
+        }
+        public async Task<(string output, List<string> enumCommands)> ExecuteCommandAsync(string command, int commandId, int ProjectId, int JobId)
         {
             #region v1
             //var process = new Process();
@@ -80,7 +87,7 @@ namespace PasToMicroservice.BAL
             // Send sudo password ONLY when sudo is used
             if (!isGvmCommand)
             {
-                process.StandardInput.WriteLine("customkali");
+                process.StandardInput.WriteLine("customkali");//customkali
                 process.StandardInput.Flush();
             }
 
@@ -94,7 +101,7 @@ namespace PasToMicroservice.BAL
             if (!string.IsNullOrWhiteSpace(error))
                 Console.WriteLine($"ERROR: {error}");
 
-            var enumCommands = NmapParser.BuildGvmScanCommand(output);
+            var enumCommands = await _scanService.BuildGvmScanCommand(output, commandId, ProjectId, JobId);
 
 
             return (output, enumCommands);

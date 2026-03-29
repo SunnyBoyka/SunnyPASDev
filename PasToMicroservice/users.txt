@@ -1,0 +1,14 @@
+admin
+root
+user
+test
+guest
+msfadmin
+kali
+ubuntu
+administrator
+ftp
+www-data
+mysql
+john
+demo

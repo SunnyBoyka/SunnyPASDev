@@ -14,6 +14,15 @@ namespace PasToMicroservice.DAL
         Task SaveResultAsync(int id, string result, string status);
 
         //Added for subcommands
-        Task InsertPendingCommandsAsync(List<string> commands, int scanId, int projectId);
+        Task InsertPendingCommandsAsync(List<string> commands, int scanId, int projectId,int jobid);
+
+        //Get ReconTools
+        Task<List<ReconTool>> GetReconToolsAsync(int projectId);
+
+        //Get VSTools
+        Task<List<VSTool>> GetVSToolsAsync(int projectId);
+
+        //Get ExploitationTools
+        Task<List<ExploitTool>> GetExploitToolsAsync(int projectId);
     }
 }

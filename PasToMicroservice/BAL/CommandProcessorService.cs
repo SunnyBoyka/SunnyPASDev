@@ -47,14 +47,14 @@ namespace PasToMicroservice.BAL
                 // Execute command
                 //string result = _executor.ExecuteCommand(scanCommand.Command);
 
-                // Execute command and get parsed enum4linux commands
-                var (result, enumCommands) = _executor.ExecuteCommand(scanCommand.Command,scanCommand.Id);
+                // Execute command and get parsed commands
+                var (result, enumCommands) = await _executor.ExecuteCommandAsync(scanCommand.Command,scanCommand.Id,scanCommand.ProjectId,scanCommand.JobId);
 
                 // Insert any enum4linux commands IMMEDIATELY after parsing
                 if (enumCommands != null && enumCommands.Count > 0)
                 {
                     Console.WriteLine($"[ID={scanCommand.Id}] Found {enumCommands.Count} commands, saving to database...");
-                    await _repository.InsertPendingCommandsAsync(enumCommands, scanCommand.Id,scanCommand.ProjectId);
+                    await _repository.InsertPendingCommandsAsync(enumCommands, scanCommand.Id,scanCommand.ProjectId,scanCommand.JobId);
                     Console.WriteLine($"[ID={scanCommand.Id}] Successfully saved {enumCommands.Count} commands to database.");
                 }
 
